@@ -83,8 +83,61 @@ class LinkedList:
             print(temp.data)
             temp = temp.next
 
+    def delete(self):
+        if self.head is None:
+            print("No nodes to delete")
+            return
+        self.head = self.head.next
 
-# Code execution starts here
+    def delete_last(self):
+        if self.head is None:
+            print("No nodes to delete")
+            return
+        temp = self.head
+        while temp.next:
+            prev = temp
+            temp = temp.next
+        prev.next = None
+
+    def delete_from_position(self, position):
+
+        # If linked list is empty
+        if self.head is None:
+            return
+
+        # Store head node
+        temp = self.head
+
+        # If head needs to be removed
+        if position == 0:
+            self.head = temp.next
+            temp = None
+            return
+
+        # Find previous node of the node to be deleted
+        for i in range(position-1):
+            temp = temp.next
+            if temp is None:
+                break
+
+        # If position is more than number of nodes
+        if temp is None:
+            print("position exceeds list length")
+            return
+        if temp.next is None:
+            print("position exceeds list length")
+            return
+
+            # Node temp.next is the node to be deleted
+        # store pointer to the next of node to be deleted
+        next = temp.next.next
+
+        # Unlink the node from linked list
+        temp.next = None
+
+        temp.next = next
+
+    # Code execution starts here
 if __name__ == '__main__':
     # Start with the empty list
     llist = LinkedList()
@@ -94,6 +147,7 @@ if __name__ == '__main__':
     llist.push(1)
     llist.append(6)
     llist.insertAfter(llist.head, 2)
+    llist.delete_from_position(8)
 
     print('Created linked list is:')
     llist.printList()
