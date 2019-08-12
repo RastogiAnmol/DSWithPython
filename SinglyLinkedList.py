@@ -1,153 +1,81 @@
-# A complete working Python program to demonstrate all
-# insertion methods of linked list
+# Python program to convert infix expression to postfix
 
-# Node class
+# Class to convert the expression
+class Conversion:
 
-
-class Node:
-
-    # Function to initialise the node object
-    def __init__(self, data):
-        self.data = data  # Assign data
-        self.next = None  # Initialize next as null
-
-
-# Linked List class contains a Node object
-class LinkedList:
-
-    # Function to initialize head
+    # Constructor to initialize the class variables
     def __init__(self):
-        self.head = None
+        self.top = -1
+        # This array is used a stack
+        self.array = []
+        # Precedence setting
+        self.output = []
+        self.precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
 
-    # Function to insert a new node at the beginning
-    def push(self, new_data):
+    # check if the stack is empty
+    def isEmpty(self):
+        return True if self.top == -1 else False
 
-        # 1 & 2: Allocate the Node &
-        # Put in the data
-        new_node = Node(new_data)
+    # Return the value of the top of the stack
+    def peek(self):
+        return self.array[-1]
 
-        # 3. Make next of new Node as head
-        new_node.next = self.head
+    # Pop the element from the stack
+    def pop(self):
+        if not self.isEmpty():
+            self.top -= 1
+            return self.array.pop()
+        else:
+            return "$"
 
-        # 4. Move the head to point to new Node
-        self.head = new_node
+    # Push the element to the stack
+    def push(self, op):
+        self.top += 1
+        self.array.append(op)
 
-    # This function is in LinkedList class. Inserts a
-    # new node after the given prev_node. This method is
-    # defined inside LinkedList class shown above */
-    def insertAfter(self, prev_node, new_data):
+    # A utility function to check is the given character
+    # is operand
+    def isOperand(self, ch):
+        return ch.isalpha()
 
-        # 1. check if the given prev_node exists
-        if prev_node is None:
-            print("The given previous node must be present in LinkedList.")
-            return
+    # Check if the precedence of operator is strictly
+    # less than top of stack or not
+    def notGreater(self, i):
+        try:
+            a = self.precedence[i]
+            b = self.precedence[self.peek()]
+            return True if a <= b else False
+        except KeyError:
+            return False
 
-        # 2. create new node &
-        # Put in the data
-        new_node = Node(new_data)
+    # The main function that converts given infix expression
+    # to postfix expression
+    def infixToPostfix(self, exp):
+        for i in exp:
+            if self.isOperand(i):
+                self.output.append(i)
+            elif i == '(':
+                self.push(i)
+            elif i == ')':
+                while not self.isEmpty() and self.peek() != '(':
+                    a = self.pop()
+                    self.output.append(a)
+                if not self.isEmpty() and self.peek() != '(':
+                    return -1
+                else:
+                    self.pop()
+            else:
+                while not self.isEmpty() and self.notGreater(i):
+                    self.output.append(self.pop())
+                self.push(i)
+        while not self.isEmpty():
+            self.output.append(self.pop())
 
-        # 4. Make next of new Node as next of prev_node
-        new_node.next = prev_node.next
+        print("".join(self.output))
 
-        # 5. make next of prev_node as new_node
-        prev_node.next = new_node
+    # Driver program to test above function
 
-    # This function is defined in Linked List class
-    # Appends a new node at the end. This method is
-    # defined inside LinkedList class shown above */
-    def append(self, new_data):
 
-        # 1. Create a new node
-        # 2. Put in the data
-        # 3. Set next as None
-        new_node = Node(new_data)
-
-        # 4. If the Linked List is empty, then make the
-        # new node as head
-        if self.head is None:
-            self.head = new_node
-            return
-
-        # 5. Else traverse till the last node
-        last = self.head
-        while (last.next):
-            last = last.next
-
-        # 6. Change the next of last node
-        last.next = new_node
-
-    # Utility function to print the linked list
-    def printList(self):
-        temp = self.head
-        while (temp):
-            print(temp.data)
-            temp = temp.next
-
-    def delete(self):
-        if self.head is None:
-            print("No nodes to delete")
-            return
-        self.head = self.head.next
-
-    def delete_last(self):
-        if self.head is None:
-            print("No nodes to delete")
-            return
-        temp = self.head
-        while temp.next:
-            prev = temp
-            temp = temp.next
-        prev.next = None
-
-    def delete_from_position(self, position):
-
-        # If linked list is empty
-        if self.head is None:
-            return
-
-        # Store head node
-        temp = self.head
-
-        # If head needs to be removed
-        if position == 0:
-            self.head = temp.next
-            temp = None
-            return
-
-        # Find previous node of the node to be deleted
-        for i in range(position-1):
-            temp = temp.next
-            if temp is None:
-                break
-
-        # If position is more than number of nodes
-        if temp is None:
-            print("position exceeds list length")
-            return
-        if temp.next is None:
-            print("position exceeds list length")
-            return
-
-            # Node temp.next is the node to be deleted
-        # store pointer to the next of node to be deleted
-        next = temp.next.next
-
-        # Unlink the node from linked list
-        temp.next = None
-
-        temp.next = next
-
-    # Code execution starts here
-if __name__ == '__main__':
-    # Start with the empty list
-    llist = LinkedList()
-    llist.push(5)
-    llist.push(4)
-    llist.push(3)
-    llist.push(1)
-    llist.append(6)
-    llist.insertAfter(llist.head, 2)
-    llist.delete_from_position(8)
-
-    print('Created linked list is:')
-    llist.printList()
+exp = "a+b*(c^d-e)^(f+g*h)-i"
+obj = Conversion()
+obj.infixToPostfix(exp)
