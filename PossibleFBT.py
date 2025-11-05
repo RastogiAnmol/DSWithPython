@@ -22,6 +22,13 @@ class Solution:
             return possibleBST
         
         for i in range(1, n, 2):
+            #  i and n-i-1 represents number of nodes in left and right subtree and not indexes
+            # since we are only considering full binary trees both left and right subtree must have odd number of nodes
+            # Let's say n = 7
+            # i = 1, n-i-1 = 5
+            # i = 3, n-i-1 = 3
+            # i = 5, n-i-1 = 1
+            
             leftTree = self.allPossibleFBT(i)
             rightTree = self.allPossibleFBT(n-i-1)
             for lT in leftTree:
@@ -34,5 +41,5 @@ class Solution:
         return possibleBST
 
 sol = Solution()
-res = sol.allPossibleFBT(5)
+res = sol.allPossibleFBT(7)
 print(res)
